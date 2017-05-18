@@ -2,29 +2,60 @@
 \begin{frame}
 \frametitle{Actors - ``A Model of Concurrent Computation in Distributed Systems``}
 \begin{itemize}
-\item Fundamentals
+\item paradigm: "everything" is an actor (thread, process, core, socket, node, system, ...) \textrightarrow{} one actor encapsulates one computation unit
+\item an actor may send messages to actors it knows by name
+\item an (idling) actor receiving a message will accept it and execute the computation defined within, resulting in the possible actions:
 	\begin{itemize}
-	\item Semantics
-	\item Reality of implementation
+	\item sending new messages
+	\item creating new actors
+	\item updating its local state
 	\end{itemize}
-\item Supported languages and tools
-\item History
-\item Recent resurgence, outlook
+\item an actor can only influence its own local state
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Actors - example}
+	\includegraphics[width=0.9\textwidth]{actorsExample}
+\end{frame}
+
+\begin{frame}
+\frametitle{Actors}
+\begin{itemize}
+\item Actor semantics have three main properties
+	\begin{itemize}
+	\item Encapsulation \& atomicity
+	(actors don't share state, process one message at a time)
+	\item Fairness
+	(every actor makes progress, every message delivered eventually)
+	\item Location transparency
+	(physical location not bound to identifier, hidden migration)
+	\end{itemize}
+\item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
+\item concerns about scalability \& performance
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Actors}
 \begin{itemize}
-\item .
-\item .
+\item Controversy: unbounded nondeterminism (unbounded delay yet guarantee of service)
+\item Many (actively) supported languages
+\item History: C. Hewitt et al. '73 \textrightarrow{} W. Clinger '81 \textrightarrow{} G. Agha '85, MIT Message Passing Semantics Group, Caltech, etc.
+\item Little use around millennium, recent resurgence due to strong relevance to distributed/cloud computing (e.g. Twitter systems scalability)
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Actors}
-\begin{itemize}
-\item .
-\item .
-\end{itemize}
-\end{frame}
+%\begin{frame}
+%\frametitle{Actors}
+%\begin{itemize}
+%\item Fundamentals
+%	\begin{itemize}
+%	\item Semantics
+%	\item Reality of implementation
+%	\end{itemize}
+%\item Supported languages and tools
+%\item History
+%\item Recent resurgence, outlook
+%\end{itemize}
+%\end{frame}
