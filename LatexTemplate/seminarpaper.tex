@@ -1,0 +1,97 @@
+\documentclass[A4]{article}
+
+%\usepackage[iso]{umlaute}
+%\usepackage{german}
+\usepackage{graphicx}
+\setlength{\parindent}{0cm}
+\setlength{\columnsep}{25pt}
+\sloppy
+
+% Your name
+\author{Paul Preissner \\ Technische Universit\"at M\"unchen}
+
+\title{Seminar Advanced Computer Architecture \\
+       {\bf Actors}
+}
+
+% Date of your talk
+\date{06.07.2017}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The actor model is a programming paradigm developed specifically with concurrent and distributed computing in mind. It defines a system of self-contained actors that only communicate with each other through dedicated messages and adhere to the basic semantic properties of encapsulation, fairness and location transparency. 
+This paper will elaborate on the history, fundamental concepts and aforementioned semantic properties of the model and discuss the issues the reality of implementation entails as well as current usage of the model in commercial projects. 
+\end{abstract}
+
+\section{Introduction}
+\label{introduction}
+Ever since the introduction of multi-processor systems in the 1970s [S] and even more so the introduction of multi-core processors in the early 2000s, one of the main topics in computer science has been the question of how these systems can be programmed, used and exploited to utilize them to full capacity. Now quite naturally the usage and utilization of any computer and particularly how easy it is for the programmer to do it is very much dependent on the programming language employed in a program. 
+Over the years, most programming languages have either been adapted to enable concurrent computing in at least a basic form or efforts have been made to enable concurrent computing through additional libraries and frameworks. But since "[c]oncurrency can be solved by a good programmer in many languages, [...] it's a tough problem to solve" as former Twitter engineer Alex Payne describes [S, 5-15], it would seem counter-intuitive to use a programming language defined at a time when sequential execution was the status quo. As such in the 1970s research first delved into the task of defining languages or rather programming paradigms that are meant to primarily deal with concurrent computing tasks. One of these paradigms is the so-called actor model, as message-passing based paradigm for concurrent and distributed computing, and in that the underlying topic of this paper. To latch onto Payne again, he continues that the Actor model is "commonly used to solve concurrency problems, and it makes that problem a lot easier to solve" [S, 5-15].
+Subsequently, this paper will first take a brief look at the history and a longer look at the fundamentals and basic semantics of the Actor model, followed by a discussion of the reported and expected issues the model brings with it in an actual implementation and concluded by a rundown of its most promising current usage scenarios. In this effort it is based primarily on the work of Gul Agha on the topic since the 1980s as well as his and his colleagues research in recent years. 
+
+\section{Actor model history}
+\begin{itemize}
+\item History: C. Hewitt et al. '73 -> W. Clinger '81 -> G. Agha '85, MIT Message Passing Semantics Group, Caltech, etc.
+\item Controversy: unbounded nondeterminism (unbounded delay yet guarantee of service) - include this? briefly perhaps.
+\item Little use around millennium, recent resurgence (due to strong relevance to distributed/cloud computing? (e.g. Twitter systems scalability))
+\end{itemize}
+
+\section{Fundamentals \& semantics of the Actor model}
+\subsection{Fundamental concept}
+\begin{itemize}
+\item paradigm: "everything" is an actor (thread, process, core, socket, node, system, ...) -> one actor encapsulates one computation unit
+\item an actor may send messages to actors it knows by name
+\item an (idling) actor receiving a message will accept it and execute the computation defined within, resulting in the possible actions:
+	\begin{itemize}
+	\item sending new messages
+	\item creating new actors
+	\item updating its local state
+	\end{itemize}
+\item an actor can only influence its own local state
+\end{itemize}
+
+\subsection{Semantics}
+\begin{itemize}
+\item Actor semantics have three main properties
+	\begin{itemize}
+	\item Encapsulation \& atomicity
+	(actors don't share state, process one message at a time)
+	\item Fairness
+	(every actor makes progress, every message delivered eventually)
+	\item Location transparency
+	(physical location not bound to identifier, hidden migration)
+	\end{itemize}
+\item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
+\item concerns about scalability \& performance
+\end{itemize}
+
+\section{Reality and issues of implementation}
+\subsection{Tools and languages}
+Blob.
+
+\subsection{Peculiarities in implementation}
+Issues.
+
+\section{Current usage of actor systems}
+Focus: current usage - embedded systems, cloud/distributed computing and microservices
+
+\section{Versus other models of concurrency}
+Expansion: comparison to other models/paradigms of concurrent computation
+
+\section{Summary}
+\label{summary}
+Summary.
+
+% Put citations from bibtex into References section which were not
+% explicity cited.
+\nocite{robotron,
+stonx,vice,650sim,herculessim,zib,4004,thermal1,thermal2,rojas}
+
+
+\bibliographystyle{plain}
+\bibliography{seminarpaper}
+\end{document}
