@@ -53,12 +53,14 @@ Furthermore, an actor by definition when receiving a message may proceed with an
 The third item leads to another fundamental restriction of the Actor model, which is that an actor can only influence its own local state [SOURCE]. It is not allowed to directly change the state of other actors in any way, such changes have to be requested through messages. This as well presents a common pitfall where a faithful implementation tends to prove inefficient and is willingly omitted in favor of better performance. This, however, also brings potentially hazardous consequences. More on this is also to be found in chapter 4. 
 
 \subsection{Semantics}
-\subsubsection{Encapsulation}
-foo.
+The Actor model as per its definition has a few major semantic properties that set the basis for most of its further powers and constraints. These are "encapsulation and atomic execution of methods (where a method represents computation in response to a message), fairness, and location transparency" [SOURCE 0-4], which if enforced already almost guarantee correct execution of the model, if not, however, lead to increased work for the programmer as the task of checking for faithful implementation falls onto them. 
+\subsubsection{Encapsulation and atomic execution}
+Encapsulation essentially describes the previously mentioned property that no actor can directly influence the state of another actor but instead every actor is its own unit and may only change upon receiving a message. More precisely, "no two actors share state" [SOURCE 0-4], subsequently describing the natural consequence of objects changing state atomically. This means that an actor upon receiving a message will compute based on the behavior defined within and will not branch into different computations if it receives another message while busy. Faithfully the actor will buffer the pending message, finish its current computation then begin computation based on the pending message, effectively completing an atomic step. 
+While in theory for the sake of performance and perhaps also intuitively it would make sense to interrupt current computation and possibly switch to a different task the moment a message arrives or start work in parallel, this would violate the semantic definition of the Actor model, introduces hazards and compounds modeling and checking the program. 
 \subsubsection{Fairness}
-bar.
-\subsubsection{Location transparency}
 tender.
+\subsubsection{Location transparency}
+bender.
 \begin{itemize}
 \item Actor semantics have three main properties
 	\begin{itemize}
