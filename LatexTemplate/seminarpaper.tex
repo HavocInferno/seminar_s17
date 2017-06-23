@@ -40,19 +40,25 @@ Since then Agha with his colleagues and the groups at the California Institute o
 
 \section{Fundamentals \& semantics of the Actor model}
 \subsection{Fundamental concept}
+Very briefly summed up, in the Actor model everything is an actor. What this means is that any single computational unit is or rather can be an Actor, regardless of how complex the computations within that unit may be. 
+As mentioned before, the model is based on the message-passing paradigm, which sees communication as the act of exchanging messages containing data and directives between whatever is defined as a computational unit. The idea of the Actor model is to encapsulate computation into actors and decouple it from the communication, which is to only be conducted via messages. As Agha puts it the model furthers one key advantage of object-oriented programming, namely the separation of an object's interface from its representation, so that now there is also a separation of control from the computational logic [SOURCE 0]. This allows Actor-based programs to be made up of "self-contained, autonomous, interactive, asynchronously operating components" [SOURCE 0] which makes them ideal for inherently nondeterministic systems such as distributed or mobile networks. 
+\subsubsection{Actor}
+As per its definition, a faithfully implemented actor can only send messages to actors it already knows. This means that it is not allowed to guess or construct names or adresses of other actors [SOURCE?]. Construction of a recipient's identifier would only be allowed if all properties and valid value ranges of the identifier were known. If this restriction is not honored, there may be unanticipated consequences and issues, as will be outlined in the later chapter on the issues of implementation. 
+Furthermore, an actor by definition when receiving a message may proceed with any and all of three possible actions given it is idle and ready to compute: 
 \begin{itemize}
-\item paradigm: "everything" is an actor (thread, process, core, socket, node, system, ...) -> one actor encapsulates one computation unit
-\item an actor may send messages to actors it knows by name
-\item an (idling) actor receiving a message will accept it and execute the computation defined within, resulting in the possible actions:
-	\begin{itemize}
-	\item sending new messages
-	\item creating new actors
-	\item updating its local state
-	\end{itemize}
-\item an actor can only influence its own local state
-\end{itemize}
+\item The actor may send messages to other actors, for example as a reply to the original sender or as subsequent communication to other actors,
+\item create new actors for arbitrary purpose, for example as workforce for a certain parallel task,
+\item update its local state, in that it may do arbitrary computations within itself.
+\end{itemize}[SOURCE]
+The third item leads to another fundamental restriction of the Actor model, which is that an actor can only influence its own local state [SOURCE]. It is not allowed to directly change the state of other actors in any way, such changes have to be requested through messages. This as well presents a common pitfall where a faithful implementation tends to prove inefficient and is willingly omitted in favor of better performance. This, however, also brings potentially hazardous consequences. More on this is also to be found in chapter 4. 
 
 \subsection{Semantics}
+\subsubsection{Encapsulation}
+foo.
+\subsubsection{Fairness}
+bar.
+\subsubsection{Location transparency}
+tender.
 \begin{itemize}
 \item Actor semantics have three main properties
 	\begin{itemize}
@@ -66,6 +72,11 @@ Since then Agha with his colleagues and the groups at the California Institute o
 \item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
 \item concerns about scalability \& performance
 \end{itemize}
+\subsection{Means of synchronization and abstraction}
+\subsubsection{Sync: a}
+buh.
+\subsubsection{Abst: a}
+gok.
 
 \section{Reality and issues of implementation}
 \subsection{Tools and languages}
