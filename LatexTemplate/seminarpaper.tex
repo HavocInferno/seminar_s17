@@ -56,24 +56,17 @@ The third item leads to another fundamental restriction of the Actor model, whic
 The Actor model as per its definition has a few major semantic properties that set the basis for most of its further powers and constraints. These are "encapsulation and atomic execution of methods (where a method represents computation in response to a message), fairness, and location transparency" [SOURCE 0-4], which if enforced already almost guarantee correct execution of the model, if not, however, lead to increased work for the programmer as the task of checking for faithful implementation falls onto them. 
 \subsubsection{Encapsulation and atomic execution}
 Encapsulation essentially describes the previously mentioned property that no actor can directly influence the state of another actor but instead every actor is its own unit and may only change upon receiving a message. More precisely, "no two actors share state" [SOURCE 0-4], subsequently describing the natural consequence of objects changing state atomically. This means that an actor upon receiving a message will compute based on the behavior defined within and will not branch into different computations if it receives another message while busy. Faithfully the actor will buffer the pending message, finish its current computation then begin computation based on the pending message, effectively completing an atomic step. 
-While in theory for the sake of performance and perhaps also intuitively it would make sense to interrupt current computation and possibly switch to a different task the moment a message arrives or start work in parallel, this would violate the semantic definition of the Actor model, introduces hazards and compounds modeling and checking the program. 
+While in theory for the sake of performance and perhaps also intuitively it would make sense to interrupt current computation and possibly switch to a different task the moment a message arrives or start work in parallel, this would violate the semantic definition of the Actor model, introduce hazards and compound modeling and checking of the program. 
 \subsubsection{Fairness}
-tender.
+In Karmani's paper, fairness is the property that "every actor makes progress if it has some computation to do, and [...] every message is eventually delivered [...] unless the destination actor is permanently disabled" [SOURCE 0-5]. Due to the previously explained atomicity, an actor will always compute something if it received a message with instructions. 
+This topic is tricky though, as this notion of fairness assumes that the underlying systems and schedulers are fair as well. Fairness in the actor model means that every message is eventually delivered, however this can only work if the underlying systems guarantee this as well. 
+Given that fairness can happen as defined, one can reason more easily about the liveness properties of a program [SOURCE 0-5], as this property will then guarantee that in a composition of actor systems, no busy system can inhibit the progress of another system, which is immensely helpful for the execution of programs as a system cannot stall the entire program, in theory at least. 
 \subsubsection{Location transparency}
-bender.
-\begin{itemize}
-\item Actor semantics have three main properties
-	\begin{itemize}
-	\item Encapsulation \& atomicity
-	(actors don't share state, process one message at a time)
-	\item Fairness
-	(every actor makes progress, every message delivered eventually)
-	\item Location transparency
-	(physical location not bound to identifier, hidden migration)
-	\end{itemize}
-\item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
-\item concerns about scalability \& performance
-\end{itemize}
+Previously there were already mentions of "identifiers" for actors. One more key property of the model is that the actual location of an actor is independent of its identifier. This means that a program can be constructed without the need to know the physical topology of the executing computer system. Of course there should still be concern about latency in distributed systems for example, but most of this balancing can be offloaded to a clever scheduler, which leads to another beneficial consequence of this location transparency, which is mobility.
+As Karmani puts it "Mobility is defined as the ability of a computation to migrate across different nodes" [SOURCE 0-5], meaning single actors can in theory be shifted across nodes without influencing the results of the entire program and even without need for the program to ever notice the migration. This is a key ingredient in enabling effective runtime load-balancing and reconfiguration on large scale systems, fault-tolerance in case of partial network failure given backup links and as a result improved scalability. Scalability is still one of the primary question marks for many concurrent computing models and languages as especially distributed systems keep growing both in number of computing units as well as physical distance covered, but even locally computers are growing in terms of computing units, co-processors and sensors that need to be integrated into a single composition. 
+The two main advantages Karmani sees in mobility are the ability to balance dynamic and irregular applications at runtime, thus optimizing performance, and the ability to optimize computation for energy efficiency by balancing the program on the ideal combination of computing unit count and energy consumption per unit. 
+However, great care needs to be taken when implementing location transparency and in consequence mobility in a real Actor framework as attempted optimizations or shortcuts can quickly prevent full or even partial migration. More on this in chapter 4 as well. 
+
 \subsection{Means of synchronization and abstraction}
 \subsubsection{Sync: a}
 buh.
@@ -81,6 +74,10 @@ buh.
 gok.
 
 \section{Reality and issues of implementation}
+\begin{itemize}
+\item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
+\item concerns about scalability \& performance
+\end{itemize}
 \subsection{Tools and languages}
 Blob.
 
