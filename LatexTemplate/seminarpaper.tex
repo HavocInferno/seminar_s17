@@ -68,12 +68,21 @@ The two main advantages Karmani sees in mobility are the ability to balance dyna
 However, great care needs to be taken when implementing location transparency and in consequence mobility in a real Actor framework as attempted optimizations or shortcuts can quickly prevent full or even partial migration. More on this in chapter 4 as well. 
 
 \subsection{Means of synchronization and abstraction}
-\subsubsection{Sync: a}
-buh.
-\subsubsection{Abst: a}
-gok.
+\subsubsection{Synchronization}
+In the context of concurrent computation, synchronization is an important aspect in the communication between workers, for the exchange of data and to ensure correctness along different phases of an algorithm or program. In the "traditional" programming models this is usually achieved with implicit or explicit procedures that are called in the affected worker, halt execution or similar in the requesting worker and then let the workers continue once the necessary data is set. 
+In most implementations of the Actor model the idea is the same on a high level, but as per the encapsulation property has to be handled entirelyrough messages. Karmani intuitively calls this "Remote Procedure Call (RPC)-like messaging" [SOURCE 0-6] as it emulates the functionality of such a remote procedure call. The way it works is that a reque thst is sent out by an actor A which then switches to waiting for replies. If it receives a reply by any actor B that matches the request, A can proceed with its computation. If not, B's message has to be deferred for later processing in some way until the expected reply arrives [SOURCE 0-6]. Exactly how this is implemented is down to the individual model instance and for the sake of usability it is preferable if the actor library or language in question provides a high-level abstraction. 
+RPC-like messages offer themselves as a straight forward solution for achieving ordered processing of a message sequence or simply when all next actions of the requestor depend on the reply. 
+Another approach are so-called local synchronization constraints. The idea here is to define a set of constraints on an actor the specifies the order it should keep and process messages in depending on its current state and the type and content of the messages, for example by inspecting the content and buffering messages that are out of order [SOURCE 5-34]. 
+Karmani suggests that these approaches can be used to construct patterns such as pipelining and divide-and-conquer to map actors to a more complex task distribution in a modular fashion [SOURCE 0-6].
+Alternatively, specialized constructs called Synchronizers could be thrown into the mix and act as a sort of pre-processing of messages that ensures the correct order, effectively shifting ordering and synchronization outside of the individual actors. 
+\subsubsection{Abstraction}
+Patterns may also be used in a different context, abstraction. As Karmani points out, ideally a programmer can utilize a language or library in a fashion similar to the conceptual level of the problem to be solved and it may be counterintuitive to work with actors as single units. Instead one would prefer to have abstractions that compose actors in a way that aligns them with the concept of the program. [SOURCE 0-7]
+Patterns can be employed to structure communication, in that groups of actors are assigned properties by which they can be identified or discarded as recipients for certain types of messages. For example actors can specify that they are only interested in messages containing specific data and belong to a certain group. Likewise a sender might specify properties that the recipients of its message need to satisfy. A message can then be sent out to a satisfying group without the need to perform a lot of individual checks or synchronization. 
+Other abstractions and also sychronization techniques are certainly possible but might be more specifically tailored for the respective problem that is to be solved or the primary application field of the library or language.
 
 \section{Reality and issues of implementation}
+It was previously established that actors may only send messages to actors they know. Some languages and libraries modify this idea towards the concept of channels, which specify in so-called stateful channel contracts "a protocol that governs the communication between two end-points (actors) of the channel" [SOURCE 0-8]. This way the type of messages allowed as well as the necessary order can be specified in a more intuitive way as opposed to individual checks of messages in each actor and additional synchronization efforts. [SOURCE 0-8]
+
 \begin{itemize}
 \item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
 \item concerns about scalability \& performance
