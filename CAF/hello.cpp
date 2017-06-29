@@ -8,27 +8,31 @@ using std::string;
 
 using namespace caf;
 
-behavior mirror(event_based_actor* self) {
+behavior pong(event_based_actor* self, string selfname) {
   // return the (initial) actor behavior
   return {
     // a handler for messages containing a single string
     // that replies with a string
     [=](const string& what) -> string {
-      // prints "Hello World!" via aout (thread-safe cout wrapper)
-      aout(self) << what << endl;
-      // reply "!dlroW olleH"
-      return string(what.rbegin(), what.rend());
+      // prints received message
+      aout(self) << selfname << ": " << what << endl;
+      // reply Pong
+      return string("Pong...");
     }
   };
 }
 
-void hello_world(event_based_actor* self, const actor& buddy) {
-  // send "Hello World!" to our buddy ...
-  self->request(buddy, std::chrono::seconds(10), "Hello World!").then(
+void ping(event_based_actor* self, const actor& buddy, string selfname) {
+  // send Ping to our buddy ...
+  self->request(buddy, std::chrono::seconds(10), "Ping...").then(
     // ... wait up to 10s for a response ...
     [=](const string& what) {
       // ... and print it
-      aout(self) << what << endl;
+      aout(self) << selfname << ": " << what << endl;
+	  //if reply is as expected, restart ping again
+	  if(what.compare("Pong...") == 0) {
+		  ping(self, buddy, selfname);
+	  }
     }
   );
 }
@@ -37,9 +41,9 @@ int main() {
   // our CAF environment
   actor_system_config cfg;
   actor_system system{cfg};
-  // create a new actor that calls 'mirror()'
-  auto mirror_actor = system.spawn(mirror);
-  // create another actor that calls 'hello_world(mirror_actor)';
-  system.spawn(hello_world, mirror_actor);
+  // create a new actor that calls 'pong()'
+  auto actor_B = system.spawn(pong, "B");
+  // create another actor that calls 'ping(actor_B)';
+  auto actor_A = system.spawn(ping, actor_B, "A");
   // system will wait until both actors are destroyed before leaving main
 }
