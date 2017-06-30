@@ -3,7 +3,6 @@
 %\usepackage[iso]{umlaute}
 %\usepackage{german}
 \usepackage{graphicx}
-\usepackage{listings}
 \setlength{\parindent}{0cm}
 \setlength{\columnsep}{25pt}
 \sloppy
@@ -47,43 +46,8 @@ Furthermore, an actor by definition when receiving a message may proceed with an
 \end{itemize}
 The third action leads to another fundamental restriction of the Actor model, an actor can only influence its own local state . It is not allowed to directly change the state of other actors in any way, such changes have to be requested through messages.\cite{reference/parallel/KarmaniA11} This presents a common pitfall where a faithful implementation tends to prove inefficient and is willingly omitted in favor of better performance, introducing hazards in execution. 
 \subsubsection{Sample actor program}
-Many actor languages and libraries for most common languages exist, most of which are still actively supported or developed. Unfortunately some of them have lackluster documentation and little developer support.\cite{WikiLang} \\
 To illustrate actors, the C++ Actor Framework \cite{cshw-nassp-13}\cite{chs-rapc-16} was used to implement a small Ping Pong program as in listing 1. An Actor A sends a string "Ping" to an Actor B. Actor B replies to any incoming messages matching to "Ping" with a reply "Pong". Actor A reacts to any incoming "Pong" with yet another "Ping".
 The output of this program is simply a continuous back and forth of "Ping" and "Pong". It does show, however, that using actors in programs proves fairly easily given a properly implemented library. Note that no thread management or balancing has to be done by the high level programmer. It is only necessary to specify the behaviors for actors and kickstart a first call on at least one actor. The rest is done almost entirely by the library and this small sample program is scheduled by CAF to utilize all four threads of the executing Intel Core i7-7500U to at least 75\% utilization. 
-\begin{lstlisting}[language=C++, caption=sample code, frame=single, breaklines]
-[includes, usings]
-
-behavior pong(event_based_actor* self, string selfname) {
-  return {
-    //if the message contains a string, proceed
-    [=](const string& what) -> string {
-      aout(self) << selfname << ": " << what << endl;
-      // reply Pong
-      return string("Pong!");
-    }
-  };
-}
-
-void ping(event_based_actor* self, const actor& buddy, string selfname) {
-  // send Ping to buddy (timeout for reply = 10s)
-  self->request(buddy, std::chrono::seconds(10), "Ping!").then(
-    //if the message contains a string, proceed
-    [=](const string& what) {
-      aout(self) << selfname << ": " << what << endl;
-	  //if reply is as expected, restart ping again
-	  if(what.compare("Pong...") == 0)
-		  ping(self, buddy, selfname);
-    }
-  );
-}
-
-int main() {
-  [caf setup]
-  // create a new actor that calls 'pong()'
-  auto actor_B = system.spawn(pong, "B");
-  // create another actor that calls 'ping(actor_B)';
-  auto actor_A = system.spawn(ping, actor_B, "A"); }
-\end{lstlisting}
 
 \subsection{Semantics}
 The Actor model by definition has a few major semantic properties. These are "encapsulation and atomic execution of methods (where a method represents computation in response to a message), fairness, and location transparency" \cite[p.~4]{reference/parallel/KarmaniA11} which if enforced almost guarantee correct execution of the model, if not, however, put the task of checking for faithful implementation onto the programmer. 
@@ -130,6 +94,10 @@ The model claims fairness in that every actor will make progress if it has pendi
 \subsubsection{Safe messaging}
 In the discussion of his paper, Karmani mentions safe messaging as a remaining major topic for optimization. This goes back to deep copying versus referencing message content. It remains an active research topics how it could be reliably and efficiently determined which types may be safely sent by reference.\cite[p.~10]{conf/pppj/KarmaniSA09}
 
+\subsection{Tools and languages}
+Tool support for actor systems is still rather basic. There are some plug-ins for Erlang and Scala for Eclipse for example and some testing tools for Erlang or Java actors exist, but widespread support is still an active development topic. \cite[p.~10]{reference/parallel/KarmaniA11}
+Libraries exist for many languages and plenty languages have been designed around the actor model, many still actively supported. Notable mentions include Erlang, Scala and SALSA along with many others. Libraries exist for most common major languages. An issue that can be seen with some of these libraries is that while they are actively updated, they have lackluster documentation and little developer support. It is noteworthy though that wide ground is covered in terms of the system structures supported, be it distributed or embedded systems, small scale or large scale. \cite{WikiLang}
+
 \section{Current usage of actor systems}
 \subsubsection{Actors in distributed systems}
 There are multiple levels at which the model can be applied in distributed systems. An intuitive option is to model clients as actors and map them 1:1 or cluster several clients into an actor. Communication then maps to the physical links between clients. This may not be efficient or suitable to the application though. A more useful mapping is to decouple and map parts of the program, such as a user of a service or a certain part of a service itself. This is the case for systems such as the Facebook chat backend \cite{Facebook}, Twitter message queues \cite{Twitter}, game servers for the video game Halo 4 \cite{Halo4} or the web application framework Lift \cite[p.~14]{Agha2016:2}. Other projects exist in high performance computing, demonstrated for example by the ActorX10 group of the Invasic project at TUM which uses a fusion of X10 and the actor model to illustrate how actors can be used to build highly scalable programs while also simplifying communication and separating control flow from computation \cite[p.~4]{Roloff:2016:AAL:2931028.2931033}. 
@@ -147,20 +115,16 @@ The largest difference to the actor model appears to be that actors are modeled 
 \subsubsection{vs process calculi}
 Process calculi are not one model specifically but a collection of similar formal models. Their basic definitions all include a few key properties. Processes communicate/interact through message-passing, similar to the actor model, however anonymously via channels, unlike the pure actor model. Processes are modeled as a composition of primitives and operators, unlike the actor model which does not specifically model the actions within an actor. These operators are subject to algebraic laws to facilitate reasoning about the system. \cite{Baeten:2005:BHP:1085667.1085669} The partial similarities between the two models do not come as a surprise considering Carl Hewitt named process calculi as one influence on his work. 
 \subsubsection{vs input/output automaton}
-I/O automata approach the issue of concurrency at an even more modular level. They can be used to model single components of almost any kind, be it computational units, data or communication methods. An automaton is essentially a state machine with inputs, outputs and some sort of internal action. Only the in- and outputs may be used to communicate with other automatons, internals are hidden. \cite{lynch1996distributed}
+I/O automata approach the issue of concurrency at an even more modular level. They can be used to model single components of almost any kind, be it computational units, data or communication methods. An automaton is essentially a state machine with inputs, outputs and some sort of internal action. Only the in- and outputs may be used to communicate with other automatons, internals are hidden. 
 In this way there is some resemblance to the encapsulation in the actor model, however the actor model does already specify communication and basic actor structure. The automata could in theory be used to model an actor system, however with more effort.
 \section{Conclusion}
 \label{conclusion}
-To recap, this paper offers a concise overview of actors. It explains the fundamentals of the actor model, the semantic properties encapsulation, fairness and location transparency (and with it mobility), synchronization through RPC-like communication and local constraints, as well as patterns for abstraction. 
-It was established that while a faithful implementation of the model is inefficient, several approaches can be taken to optimize runtime behavior in latency masking, sending efficiency and parallelism overhead.
-Lastly, current usage of the model was discussed. It's seems very well suited for distributed computing as well as embedded systems as its structures and communication can be nicely mapped to such systems and facilitate correctness checking. 
-Other models of concurrency share some properties with the model, yet it stands out with distinct advantages. 
-Unfortunately the extent of this paper does not allow deeper analysis of the model or an expanded view on its usage in modern commercial or free/open source projects as the presented overview hints at a wide range of possible applications. It is clear, however, that it has great potential for parallelizable challenges in computing and more research is needed to materialize this potential.
-
+Conclusion.
 
 % Put citations from bibtex into References section which were not
 % explicity cited.
-\nocite{ActorSander,Agha2016,conf/eef/RenA96}
+\nocite{robotron,
+stonx,vice,650sim,herculessim,zib,4004,thermal1,thermal2,rojas}
 
 
 \bibliographystyle{plain}

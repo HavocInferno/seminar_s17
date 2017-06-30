@@ -11,8 +11,10 @@ using namespace caf;
 behavior pong(event_based_actor* self, string selfname) {
   // return the (initial) actor behavior
   return {
-    //if the message contains a string, proceed
+    // a handler for messages containing a single string
+    // that replies with a string
     [=](const string& what) -> string {
+      // prints received message
       aout(self) << selfname << ": " << what << endl;
       // reply Pong
       return string("Pong...");
@@ -21,10 +23,11 @@ behavior pong(event_based_actor* self, string selfname) {
 }
 
 void ping(event_based_actor* self, const actor& buddy, string selfname) {
-  // send Ping to buddy (timeout for reply = 10s)
+  // send Ping to our buddy ...
   self->request(buddy, std::chrono::seconds(10), "Ping...").then(
-	//if the message contains a string, proceed
+    // ... wait up to 10s for a response ...
     [=](const string& what) {
+      // ... and print it
       aout(self) << selfname << ": " << what << endl;
 	  //if reply is as expected, restart ping again
 	  if(what.compare("Pong...") == 0) {
@@ -38,10 +41,9 @@ int main() {
   // our CAF environment
   actor_system_config cfg;
   actor_system system{cfg};
-  
   // create a new actor that calls 'pong()'
   auto actor_B = system.spawn(pong, "B");
-  
   // create another actor that calls 'ping(actor_B)';
   auto actor_A = system.spawn(ping, actor_B, "A");
+  // system will wait until both actors are destroyed before leaving main
 }
