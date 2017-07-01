@@ -1,21 +1,20 @@
 \section{Actor basics}
 \begin{frame}
-\frametitle{Brief history of ``A Model of Concurrent Computation in Distributed Systems``}
-REWORK
+\frametitle{Brief history}
 \begin{itemize}
-\item Controversy: unbounded nondeterminism (unbounded delay yet guarantee of service)
-\item Many (actively) supported languages
-\item History: C. Hewitt et al. '73 \textrightarrow{} W. Clinger '81 \textrightarrow{} G. Agha '85, MIT Message Passing Semantics Group, Caltech, etc.
-\item Little use around millennium, recent resurgence due to strong relevance to distributed/cloud computing (e.g. Twitter systems scalability)
+\item C. Hewitt et al. '73 onward: first theory of actor model, operational semantics, axioms
+\item W. Clinger '81: proved unbounded nondeterminism property
+\item G. Agha '85: formalization of semantic model
+\item Theoretical/Practical research by MIT, CalTech, industry, etc.
+\item Recent resurgence (strong relevance to distributed/cloud computing)
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{``A Model of Concurrent Computation in Distributed Systems``}
-REWORK
 \begin{itemize}
-\item paradigm: "everything" is an actor (thread, process, core, socket, node, system, ...) \textrightarrow{} one actor encapsulates one computation unit
-\item an actor may send messages to actors it knows by name
+\item actors encapsulate computation (technically at any level)
+\item an actor may only send messages to actors it knows by name
 \item an (idling) actor receiving a message will accept it and execute the computation defined within, resulting in the possible actions:
 	\begin{itemize}
 	\item sending new messages
@@ -24,19 +23,78 @@ REWORK
 	\end{itemize}
 \item an actor can only influence its own local state
 \end{itemize}
+\textrightarrow "self-contained, autonomous, interactive, asynchronously operating components" [Karmani, Agha]
 \end{frame}
 
 \begin{frame}
 \frametitle{Example structure}
-	\includegraphics[width=0.9\textwidth]{actorsExample}
+\begin{figure}
+\centerline{
+\includegraphics[width=0.6\textwidth]{actorsExample2}
+}
+\caption{Any actor may send messages to other known actors, create new actors or update its own state.}
+% A label to allow refering to this figure in the text.
+\label{Actors}
+\end{figure}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Hello ...}
-Listing sample code
+\begin{lstlisting}[language=C++, caption=sample code, frame=single, breaklines]
+[includes, usings]
+
+behavior pong(event_based_actor* self, string selfname) {
+  return {
+    //if the message contains a string, proceed
+    [=](const string& what) -> string {
+      aout(self) << selfname << ": " << what << endl;
+      // reply Pong
+      return string("Pong!");
+    }
+  };
+}
+\end{lstlisting}
+Specify behavior
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
+\frametitle{Hello ...}
+\begin{lstlisting}[language=C++, caption=sample code, frame=single, breaklines]
+void ping(event_based_actor* self, const actor& buddy, string selfname) {
+  // send Ping to buddy (timeout for reply = 10s)
+  self->request(buddy, std::chrono::seconds(10), "Ping!").then(
+    //if the message contains a string, proceed
+    [=](const string& what) {
+      aout(self) << selfname << ": " << what << endl;
+	  //if reply is as expected, restart ping again
+	  if(what.compare("Pong...") == 0)
+		  ping(self, buddy, selfname);
+    }
+  );
+}
+\end{lstlisting}
+Specify actions
+\end{frame}
+
+\begin{frame}[fragile]
 \frametitle{... World!}
-Output of sample code
+\begin{lstlisting}[language=C++, caption=sample code, frame=single, breaklines]
+int main() {
+  [caf setup]
+  // create a new actor that calls 'pong()'
+  auto actor_B = system.spawn(pong, "B");
+  // create another actor that calls 'ping(actor_B)';
+  auto actor_A = system.spawn(ping, actor_B, "A"); }
+\end{lstlisting}
+Spawn actors and start something
+\begin{lstlisting}[frame=single, breaklines]
+B: Ping...
+A: Pong...
+B: Ping...
+A: Pong...
+B: Ping...
+A: Pong...
+[...]
+\end{lstlisting}
+Output
 \end{frame}

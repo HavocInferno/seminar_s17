@@ -1,18 +1,22 @@
 \section{Semantics}
 \begin{frame}
-\frametitle{Semantic properties}
-REWORK - update, detail? one frame per property?
+\frametitle{Main semantic properties}
 \begin{itemize}
-\item Actor semantics have three main properties
-	\begin{itemize}
-	\item Encapsulation \& atomicity
-	(actors don't share state, process one message at a time)
+	\item Encapsulation \& atomic execution:	
+	actors don't share state; 
+	process one message at a time; 
+	arrivals mid-computation need to be buffered;
 	\item Fairness
-	(every actor makes progress, every message delivered eventually)
+	every actor makes progress; 
+	every message is delivered eventually; 
+	assumes fair scheduler; 
+	\textrightarrow subsystems cannot stall entire program
 	\item Location transparency
-	(physical location not bound to identifier, hidden migration)
-	\end{itemize}
-\item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
-\item concerns about scalability \& performance
+	physical location not bound to identifier;
+	\textrightarrow (hidden) migration possible, i.e. {\it mobility}
+	\textrightarrow allows load-balancing, efficiency optimization
 \end{itemize}
 \end{frame}
+
+%\item in reality, some aspects aren't implemented faithfully (for efficiency, complexity)
+%\item concerns about scalability \& performance
