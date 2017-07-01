@@ -1,11 +1,20 @@
 \section{Synchronization and abstraction}
 \begin{frame}
 \frametitle{Synchronization ...}
-RPC-like
-local sync cons
+Synchronization has to be through messages
+\begin{itemize}
+\item intuitively: "Remote Procedure Call"-{\it like} messaging\\
+send request, wait (and defer) until matching reply \textrightarrow allows e.g. ordering
+\item local synchronization constraints: specify constraints on actors by which they accept or deny messages
+\item synchronizers: similar to pre-processing of messages
+\end{itemize}
+\textrightarrow use methods to construct complex work patterns
 \end{frame}
 
 \begin{frame}
 \frametitle{... and abstraction}
-Patterns
+\begin{itemize}
+\item use patterns to structure actors into different compositions
+\item use abstract compositions to group actors and allow more efficient identification or message recipients
+\end{itemize}
 \end{frame}

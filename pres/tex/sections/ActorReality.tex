@@ -1,12 +1,37 @@
 \section{Reality}
 \begin{frame}
 \frametitle{Worst practices}
+\begin{itemize}
+\item Faithful implementation of the model tends to be inefficient, shortcuts tend to be taken (that violate its properties) \textrightarrow correctness of execution after optimization has to be checked
+\end{itemize}
+\vspace{5mm}
+\begin{itemize}
+\item Message latency: more distance \= more latency \\
+\textrightarrow use communication-computation overlap and suitable decomposition/migration to mask
+\item Naive send vs channels: individual sends may have high overhead \\
+\textrightarrow utilize channels with stateful channel contracts to reduce overhead
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Worst practices}
+\begin{itemize}
+\item Thread/switch overhead: the closer to a 1:1 map-to-thread mapping, the higher the overhead for switching execution to other actors; additional overhead for thread creation \\
+\textrightarrow Use continuations based actors that don't perform full context switches and have reduced creation overhead
+\item Copying vs referencing: model demands no state be shared, naively this means no references be sent, only deep copies \\
+\textrightarrow carefully allow send-by-reference for immutable types
+\item Scheduling: scheduler needs to guarantee fairness as in the model, not all schedulers satisfy this \\
+\textrightarrow modify on a case-by-case basis; lazy thread creation - when tweaked - can be a relatively simple fix
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Support}
+\begin{itemize}
+\item $\sim$25 native actor languages
+\item \textgreater 50 libraries for common languages (C, C++, C\#, Java, JS, Python, Ruby, Haskell, LabVIEW, .NET, etc)
+\item most still actively supported, however some lacking proper documentation and developer support
+\item plug-ins for some IDEs exist (e.g. Erlang, Scala for Eclipse), some testing tools as well
+\item widespread support and documentation still spotty
+\end{itemize}
 \end{frame}

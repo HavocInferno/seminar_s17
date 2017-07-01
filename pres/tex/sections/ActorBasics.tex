@@ -32,14 +32,15 @@
 \centerline{
 \includegraphics[width=0.6\textwidth]{actorsExample2}
 }
-\caption{Any actor may send messages to other known actors, create new actors or update its own state.}
+\caption{Any actor may send messages to other known actors, create new actors or update its own state. [inspired by Karmani, Agha]}
 % A label to allow refering to this figure in the text.
 \label{Actors}
 \end{figure}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Hello ...}
+\frametitle{(Example) Hello ...}
+using C++ Actor Framework; to illustrate:
 \begin{lstlisting}[language=C++, caption=sample code, frame=single, breaklines]
 [includes, usings]
 
@@ -58,7 +59,7 @@ Specify behavior
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Hello ...}
+\frametitle{(Example) Hello ...}
 \begin{lstlisting}[language=C++, caption=sample code, frame=single, breaklines]
 void ping(event_based_actor* self, const actor& buddy, string selfname) {
   // send Ping to buddy (timeout for reply = 10s)
@@ -77,7 +78,7 @@ Specify actions
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{... World!}
+\frametitle{(Example) ... World!}
 \begin{lstlisting}[language=C++, caption=sample code, frame=single, breaklines]
 int main() {
   [caf setup]
@@ -96,5 +97,5 @@ B: Ping...
 A: Pong...
 [...]
 \end{lstlisting}
-Output
+Output (CAF "automatically" schedules to achieve high utilization across all 4 threads of i7 7500U)
 \end{frame}

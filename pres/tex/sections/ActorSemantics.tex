@@ -2,17 +2,15 @@
 \begin{frame}
 \frametitle{Main semantic properties}
 \begin{itemize}
-	\item Encapsulation \& atomic execution:	
-	actors don't share state; 
-	process one message at a time; 
-	arrivals mid-computation need to be buffered;
-	\item Fairness
-	every actor makes progress; 
-	every message is delivered eventually; 
-	assumes fair scheduler; 
-	\textrightarrow subsystems cannot stall entire program
-	\item Location transparency
-	physical location not bound to identifier;
+	\item Encapsulation \& atomic execution:\\	
+	actors don't share state; \\
+	process one message at a time, arrivals mid-computation need to be buffered;
+	\item Fairness\\
+	every actor makes progress, every message is delivered eventually; \\
+	assumes fair scheduler; \\
+	\textrightarrow actor cannot stall entire program
+	\item Location transparency\\
+	physical location not bound to identifier; \\
 	\textrightarrow (hidden) migration possible, i.e. {\it mobility}
 	\textrightarrow allows load-balancing, efficiency optimization
 \end{itemize}
