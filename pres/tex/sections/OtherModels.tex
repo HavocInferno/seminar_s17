@@ -1,5 +1,28 @@
 \section{Comparison to other models}
 \begin{frame}
 \frametitle{Versus}
-???
+\begin{itemize}
+\item Petri nets: places (conditions), transitions (events), arcs between places$\leftrightarrow$transitions \textrightarrow net of pre-/postconditions of possible events \\
+\textrightarrow any number of tokens in the net, tokens trigger transitions and are transferred to postconditions \\
+\textrightarrow actors modeled as units of computation, petri nets as transitions/events mostly independent of units
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Versus}
+\begin{itemize}
+\item process calculi: collection of formal models, processes interact by message-passing (anonymous, through channels), processes as composition of primitives and operators subject to algebraic laws \\
+\textrightarrow message-passing similar to actors, processes could be modeled to resemble actors
+\item I/O automata: automaton modeled into any kind of single component, as state machine with in-/output and (hidden) internal actions \\
+\textrightarrow similar to encapsulation in actors, automata can be modeled to resemble actor model structure
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Conclusion?}
+\begin{itemize}
+\item actor model has great potential in achieving scalable concurrency
+\item quantitative and qualitative developer support is lacking, but increasing
+\item more and more use in large and small, distributed and embedded, commercial and free/open projects
+\end{itemize}
 \end{frame}
